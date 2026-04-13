@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPY Live — Alpaca Feed</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0f;
+  --bg2: #141417;
+  --bg3: #1a1a1f;
+  --bg4: #202026;
+  --text: #e8e6df;
+  --text2: #8a8880;
+  --text3: #4a4845;
+  --accent: #c8f035;
+  --accent2: #35f0a0;
+  --red: #f03545;
+  --amber: #f0a535;
+  --blue: #35a0f0;
+  --border: rgba(255,255,255,0.07);
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+/* ── Grid ── */
+.app { max-width: 900px; margin: 0 auto; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
+.logo { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: .15em; text-transform: uppercase; }
+.logo span { color: var(--accent); }
+.status-pill { display: flex; align-items: center; gap: 7px; background: var(--bg3); border: 0.5px solid var(--border); border-radius: 99px; padding: 5px 12px; font-family: var(--mono); font-size: 10px; color: var(--text2); }
+.pip { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); }
+.pip.live { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: glow 1.5s infinite; }
+.pip.err { background: var(--red); }
+.pip.loading { background: var(--amber); animation: glow 0.8s infinite; }
+@keyframes glow { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ── Setup panel ── */
+.setup { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+.setup-title { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; margin-bottom: 12px; }
+.setup-step { font-size: 12px; color: var(--text2); margin-bottom: 6px; line-height: 1.6; }
+.setup-step code { background: var(--bg3); color: var(--accent2); padding: 1px 5px; border-radius: 3px; font-family: var(--mono); font-size: 11px; }
+.fields { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+input[type=text], input[type=password] {
+  background: var(--bg3); border: 0.5px solid var(--border); border-radius: 6px;
+  color: var(--text); font-family: var(--mono); font-size: 12px;
+  padding: 8px 12px; flex: 1; min-width: 160px; outline: none;
+  transition: border-color .2s;
+}
+input:focus { border-color: rgba(200,240,53,0.4); }
+input::placeholder { color: var(--text3); }
+select {
+  background: var(--bg3); border: 0.5px solid var(--border); border-radius: 6px;
+  color: var(--text); font-family: var(--mono); font-size: 12px; padding: 8px 10px; outline: none;
+}
+.btn {
+  padding: 8px 16px; border-radius: 6px; border: 0.5px solid var(--border);
+  font-family: var(--mono); font-size: 12px; cursor: pointer; white-space: nowrap;
+  background: var(--bg3); color: var(--text2); transition: all .15s;
+}
+.btn:hover { background: var(--bg4); color: var(--text); }
+.btn.primary { background: var(--accent); color: #0d0d0f; border-color: var(--accent); font-weight: 600; }
+.btn.primary:hover { opacity: .85; }
+.btn.sm { padding: 5px 10px; font-size: 10px; }
+
+/* ── Main metrics ── */
+.price-strip { display: grid; grid-template-columns: auto 1fr; gap: 1.25rem; margin-bottom: 1.25rem; align-items: center; }
+.price-main { font-family: var(--mono); font-size: 52px; font-weight: 300; letter-spacing: -.02em; line-height: 1; }
+.price-main.up { color: var(--accent2); }
+.price-main.down { color: var(--red); }
+.price-main.flat { color: var(--text); }
+.price-meta { font-family: var(--mono); font-size: 13px; margin-top: 6px; }
+.price-meta.up { color: var(--accent2); }
+.price-meta.down { color: var(--red); }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 8px; margin-bottom: 1.25rem; }
+.kpi { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.kpi-label { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 6px; }
+.kpi-val { font-family: var(--mono); font-size: 18px; font-weight: 400; }
+.kpi-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 4px; }
+.kv-green { color: var(--accent2); }
+.kv-red { color: var(--red); }
+.kv-amber { color: var(--amber); }
+.kv-blue { color: var(--blue); }
+.kv-accent { color: var(--accent); }
+
+/* ── Levels ── */
+.levels-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+@media(max-width:560px){.levels-grid{grid-template-columns:1fr}}
+.panel { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.panel-title { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+.level-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 0.5px solid var(--border); font-family: var(--mono); font-size: 12px; }
+.level-row:last-child { border-bottom: none; }
+.level-name { color: var(--text2); }
+.level-price { font-weight: 500; }
+.tag { font-size: 9px; padding: 2px 6px; border-radius: 99px; }
+.tag-green { background: rgba(53,240,160,.15); color: var(--accent2); }
+.tag-red { background: rgba(240,53,69,.15); color: var(--red); }
+.tag-amber { background: rgba(240,165,53,.15); color: var(--amber); }
+.tag-gray { background: rgba(255,255,255,.05); color: var(--text3); }
+
+/* ── Alerts ── */
+.alerts-box { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 1.25rem; max-height: 220px; overflow-y: auto; }
+.alert-item { display: flex; gap: 10px; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; }
+.alert-item:last-child { border-bottom: none; }
+.alert-time { font-family: var(--mono); font-size: 10px; color: var(--text3); min-width: 40px; padding-top: 1px; }
+.alert-body { line-height: 1.5; }
+.alert-bull { color: var(--accent2); }
+.alert-bear { color: var(--red); }
+.alert-info { color: var(--blue); }
+.alert-warn { color: var(--amber); }
+.no-alerts { color: var(--text3); font-family: var(--mono); font-size: 11px; text-align: center; padding: 1rem; }
+
+/* ── Claude copy box ── */
+.copy-panel { background: var(--bg2); border: 0.5px solid var(--accent); border-radius: 10px; padding: 14px 16px; margin-bottom: 1.25rem; }
+.copy-title { font-family: var(--mono); font-size: 9px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.copy-text { font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.9; white-space: pre-wrap; background: var(--bg3); border-radius: 6px; padding: 10px 12px; }
+.copy-text span.hi { color: var(--text); }
+
+/* ── Bar table ── */
+.bar-wrap { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.bar-table { width: 100%; font-family: var(--mono); font-size: 11px; border-collapse: collapse; }
+.bar-table th { color: var(--text3); font-weight: 400; padding: 0 0 8px; text-align: left; border-bottom: 0.5px solid var(--border); padding-right: 12px; letter-spacing: .06em; font-size: 9px; text-transform: uppercase; }
+.bar-table td { padding: 5px 12px 5px 0; border-bottom: 0.5px solid rgba(255,255,255,0.04); vertical-align: middle; }
+.bar-table tr.orb-row td { background: rgba(240,165,53,.05); }
+.bar-table tr.cur-row td { background: rgba(53,160,240,.06); }
+.vol-bar { height: 2px; background: var(--bg4); border-radius: 1px; margin-top: 3px; overflow: hidden; }
+.vol-fill { height: 100%; background: var(--blue); border-radius: 1px; }
+.badge-sm { font-size: 9px; padding: 1px 5px; border-radius: 99px; }
+
+/* ── Refresh ring ── */
+.refresh-ring { position: relative; width: 28px; height: 28px; }
+.refresh-ring svg { transform: rotate(-90deg); }
+.refresh-ring circle { fill: none; stroke: var(--text3); stroke-width: 2; }
+.refresh-ring .prog { stroke: var(--accent); stroke-dasharray: 75.4; stroke-dashoffset: 75.4; transition: stroke-dashoffset 1s linear; }
+
+.top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.market-time { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <div>
+    <div class="logo">SPY <span>//</span> LIVE MARKET</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:3px;font-family:var(--mono)" id="market-clock">--:-- ET</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <div class="status-pill"><div class="pip" id="pip"></div><span id="status-txt">disconnected</span></div>
+    <button class="btn sm" onclick="toggleSound()" id="snd-btn">SND ON</button>
+    <button class="btn sm" onclick="clearAlerts()">CLR</button>
+  </div>
+</div>
+
+<!-- Setup -->
+<div class="setup" id="setup">
+  <div class="setup-title">// ALPACA API SETUP</div>
+  <div class="setup-step">Get keys from <strong style="color:var(--text)">alpaca.markets</strong> → Paper Trading → API Keys → Generate. Use <code>Paper Trading</code> keys for free real-time data.</div>
+  <div class="fields">
+    <input type="text" id="api-key" placeholder="API Key ID  (PKXXXXXXX...)"/>
+    <input type="password" id="secret-key" placeholder="Secret Key"/>
+    <select id="bar-size"><option value="2" selected>2-min bars</option>
+    <option value="3">3-min bars</option><option value="1">1-min bars</option><option value="5">5-min bars</option></select>
+    <button class="btn primary" onclick="startFeed()">CONNECT</button>
+    <button class="btn sm" onclick="document.getElementById('setup').style.display=\"none\"">HIDE</button>
+  </div>
+</div>
+
+<!-- Price strip -->
+<div class="top-row">
+  <div>
+    <div class="price-main flat" id="price-display">—</div>
+    <div class="price-meta" id="price-change">—</div>
+  </div>
+  <div style="flex:1"></div>
+  <div class="refresh-ring" title="Next refresh">
+    <svg width="28" height="28" viewBox="0 0 28 28">
+      <circle cx="14" cy="14" r="12"/>
+      <circle class="prog" id="refresh-ring" cx="14" cy="14" r="12"/>
+    </svg>
+  </div>
+  <div style="font-family:var(--mono);font-size:10px;color:var(--text3)" id="next-refresh">next refresh: --</div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-label">VWAP</div><div class="kpi-val" id="kpi-vwap">—</div><div class="kpi-sub" id="kpi-vwap-pos">—</div></div>
+  <div class="kpi"><div class="kpi-label">ORB High</div><div class="kpi-val kv-green" id="kpi-orb-h">—</div><div class="kpi-sub" id="kpi-orb-h-sub">9:30–10:00</div></div>
+  <div class="kpi"><div class="kpi-label">ORB Low</div><div class="kpi-val kv-red" id="kpi-orb-l">—</div><div class="kpi-sub" id="kpi-orb-l-sub">9:30–10:00</div></div>
+  <div class="kpi"><div class="kpi-label">ORB Range</div><div class="kpi-val kv-amber" id="kpi-orb-range">—</div><div class="kpi-sub" id="kpi-orb-status">forming...</div></div>
+  <div class="kpi"><div class="kpi-label">Session High</div><div class="kpi-val kv-accent" id="kpi-sess-h">—</div><div class="kpi-sub" id="kpi-sess-h-t">—</div></div>
+  <div class="kpi"><div class="kpi-label">Session Low</div><div class="kpi-val kv-blue" id="kpi-sess-l">—</div><div class="kpi-sub" id="kpi-sess-l-t">—</div></div>
+</div>
+
+<!-- Levels + alerts -->
+<div class="levels-grid">
+  <div class="panel">
+    <div class="panel-title">// Key levels</div>
+    <div class="level-row"><div class="level-name">Prior close</div><div class="level-price" id="l-prior">$679.86</div><div class="tag tag-gray">Apr 9</div></div>
+    <div class="level-row"><div class="level-name">ORB High</div><div class="level-price" id="l-orb-h">—</div><div class="tag tag-green" id="t-orb-h">—</div></div>
+    <div class="level-row"><div class="level-name">ORB Low</div><div class="level-price" id="l-orb-l">—</div><div class="tag tag-red" id="t-orb-l">—</div></div>
+    <div class="level-row"><div class="level-name">VWAP</div><div class="level-price" id="l-vwap">—</div><div class="tag" id="t-vwap">—</div></div>
+    <div class="level-row"><div class="level-name">Prev high</div><div class="level-price">$681.16</div><div class="tag tag-gray">R</div></div>
+    <div class="level-row"><div class="level-name">Prev low</div><div class="level-price">$673.77</div><div class="tag tag-gray">S</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">// Alert filters</div>
+    <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-orb-bull" checked> ORB high break <span class="tag tag-green" style="margin-left:4px">bull BOS</span></label>
+    <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-orb-bear" checked> ORB low break <span class="tag tag-red" style="margin-left:4px">bear BOS</span></label>
+    <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-vwap" checked> VWAP cross <span class="tag tag-amber" style="margin-left:4px">pivot</span></label>
+    <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-orb-set" checked> ORB locked 10:00 <span class="tag" style="margin-left:4px;background:rgba(53,160,240,.15);color:var(--blue)">info</span></label>
+    <label style="display:flex;gap:8px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-vol" checked> Volume spike ×1.8</label>
+  </div>
+</div>
+
+<!-- Claude copy box -->
+<div class="copy-panel">
+  <div class="copy-title">
+    <span>// PASTE TO CLAUDE — session snapshot</span>
+    <button class="btn sm" onclick="copyToClipboard()">COPY</button>
+  </div>
+  <div class="copy-text" id="claude-snapshot">Connect Alpaca to generate snapshot...</div>
+</div>
+
+<!-- Alerts -->
+<div class="alerts-box">
+  <div class="no-alerts" id="alerts-placeholder">No alerts yet — connect to start monitoring</div>
+</div>
+
+<!-- Bar table -->
+<div class="bar-wrap" style="margin-top:1.25rem">
+  <div class="panel-title" style="margin-bottom:12px">// Completed bars</div>
+  <div style="overflow-x:auto">
+  <table class="bar-table">
+    <thead><tr><th>Time</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>VWAP</th><th>vs VWAP</th><th>Volume</th></tr></thead>
+    <tbody id="bar-body"><tr><td colspan="8" style="color:var(--text3);padding:12px 0;text-align:center">Waiting for bars...</td></tr></tbody>
+  </table>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+let apiKey='', secretKey='', barMin=3;
+let bars=[], cumTPV=0, cumVol=0;
+let orbH=null, orbL=null, orbSet=false;
+let sessH=null, sessL=null, sessHt='', sessLt='';
+let openPrice=null, lastPrice=null;
+let prevAboveVwap=null, prevAboveOrbH=null, prevAboveOrbL=null;
+let recentVols=[];
+let feedTimer=null, ringTimer=null, ringPct=0;
+let soundOn=true, alertCount=0;
+const PRIOR_CLOSE=679.86;
+
+const p = n => n!=null ? '$'+n.toFixed(2) : '—';
+const pn = n => n!=null ? (n>=0?'+':'')+n.toFixed(2) : '—';
+
+// ── Sound ─────────────────────────────────────────────────────────────────────
+function beep(f,d,t='sine'){
+  if(!soundOn)return;
+  try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t;o.frequency.value=f;g.gain.setValueAtTime(0.25,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+d/1000);o.start();o.stop(c.currentTime+d/1000);}catch(e){}
+}
+function toggleSound(){soundOn=!soundOn;document.getElementById('snd-btn').textContent=soundOn?'SND ON':'SND OFF';}
+
+// ── Alerts ────────────────────────────────────────────────────────────────────
+function addAlert(type,msg,time){
+  const box=document.querySelector('.alerts-box');
+  const ph=document.getElementById('alerts-placeholder');
+  if(ph)ph.remove();
+  const el=document.createElement('div');
+  el.className='alert-item';
+  el.innerHTML=`<div class="alert-time">${time}</div><div class="alert-body alert-${type}">${msg}</div>`;
+  box.insertBefore(el,box.firstChild);
+  if(box.children.length>40)box.removeChild(box.lastChild);
+}
+function clearAlerts(){document.querySelector('.alerts-box').innerHTML='<div class="no-alerts" id="alerts-placeholder">Cleared</div>';}
+
+// ── Status ────────────────────────────────────────────────────────────────────
+function setStatus(state,txt){
+  document.getElementById('pip').className='pip '+state;
+  document.getElementById('status-txt').textContent=txt;
+}
+
+// ── Core engine ───────────────────────────────────────────────────────────────
+function processBar(time,open,high,low,close,vol){
+  if(!openPrice)openPrice=open;
+  lastPrice=close;
+  if(!sessH||high>sessH){sessH=high;sessHt=time;}
+  if(!sessL||low<sessL){sessL=low;sessLt=time;}
+
+  const tp=(high+low+close)/3;
+  cumTPV+=tp*vol;cumVol+=vol;
+  const vwap=cumVol>0?cumTPV/cumVol:close;
+
+  const [h,m]=time.split(':').map(Number);
+  const mins=h*60+m;
+  const isOrb=mins<600;
+
+  if(isOrb){
+    orbH=orbH?Math.max(orbH,high):high;
+    orbL=orbL?Math.min(orbL,low):low;
+  }
+
+  if(!orbSet&&mins>=600&&orbH!=null){
+    orbSet=true;
+    if(document.getElementById('al-orb-set').checked){
+      addAlert('info',`ORB LOCKED — High: ${p(orbH)} / Low: ${p(orbL)} / Range: ${p(orbH-orbL)}`,time);
+      beep(523,300);
+    }
+  }
+
+  recentVols.push(vol);if(recentVols.length>8)recentVols.shift();
+  const avgVol=recentVols.reduce((a,b)=>a+b,0)/recentVols.length;
+  if(recentVols.length>=4&&vol>avgVol*1.8&&orbSet&&document.getElementById('al-vol').checked){
+    addAlert('warn',`VOL SPIKE ${Math.round(vol/1000)}K — ${(vol/avgVol).toFixed(1)}× avg`,time);
+    beep(660,180);
+  }
+
+  const aboveVwap=close>vwap;
+  if(prevAboveVwap!==null&&aboveVwap!==prevAboveVwap&&document.getElementById('al-vwap').checked){
+    if(aboveVwap){
+      addAlert('bull',`VWAP RECLAIM ${p(close)} crossed above VWAP ${p(vwap)}`,time);
+      beep(659,180);setTimeout(()=>beep(784,220),210);
+    }else{
+      addAlert('bear',`VWAP BREAK ${p(close)} crossed below VWAP ${p(vwap)}`,time);
+      beep(392,180);setTimeout(()=>beep(330,220),210);
+    }
+  }
+  prevAboveVwap=aboveVwap;
+
+  if(orbSet){
+    const aboveOrbH=close>orbH;
+    if(prevAboveOrbH===false&&aboveOrbH&&document.getElementById('al-orb-bull').checked){
+      addAlert('bull',`BULL ORB BREAK ${p(close)} > ORB High ${p(orbH)} ${aboveVwap?'✓ above VWAP':'⚠ below VWAP'}`,time);
+      beep(880,200);setTimeout(()=>beep(1047,250),230);setTimeout(()=>beep(1319,300),490);
+    }
+    if(prevAboveOrbH===null)prevAboveOrbH=aboveOrbH;else prevAboveOrbH=aboveOrbH;
+
+    const belowOrbL=close<orbL;
+    if(prevAboveOrbL===true&&belowOrbL&&document.getElementById('al-orb-bear').checked){
+      addAlert('bear',`BEAR ORB BREAK ${p(close)} < ORB Low ${p(orbL)} ${!aboveVwap?'✓ below VWAP':'⚠ above VWAP'}`,time);
+      beep(220,250);setTimeout(()=>beep(185,280),280);setTimeout(()=>beep(147,320),570);
+    }
+    if(prevAboveOrbL===null)prevAboveOrbL=!belowOrbL;else prevAboveOrbL=!belowOrbL;
+  }
+
+  updateUI(close,vwap,aboveVwap,time);
+  bars.push({time,open,high,low,close,vwap,vol,isOrb});
+  updateTable(vwap);
+  updateSnapshot(close,vwap,aboveVwap,time);
+}
+
+// ── UI updates ────────────────────────────────────────────────────────────────
+function updateUI(price,vwap,aboveVwap,time){
+  const chg=openPrice?price-openPrice:0;
+  const pct=openPrice?chg/openPrice*100:0;
+  const priceEl=document.getElementById('price-display');
+  priceEl.textContent='$'+price.toFixed(2);
+  priceEl.className='price-main '+(chg>0.01?'up':chg<-0.01?'down':'flat');
+  const chgEl=document.getElementById('price-change');
+  chgEl.textContent=`${pn(chg)} (${pct>=0?'+':''}${pct.toFixed(2)}%) from open`;
+  chgEl.className='price-meta '+(chg>=0?'up':'down');
+
+  document.getElementById('kpi-vwap').textContent=p(vwap);
+  document.getElementById('kpi-vwap-pos').textContent=aboveVwap?'↑ above VWAP':'↓ below VWAP';
+  document.getElementById('kpi-vwap-pos').style.color=aboveVwap?'var(--accent2)':'var(--red)';
+
+  if(orbH){
+    document.getElementById('kpi-orb-h').textContent=p(orbH);
+    document.getElementById('kpi-orb-l').textContent=p(orbL);
+    document.getElementById('kpi-orb-range').textContent=p(orbH-orbL);
+    document.getElementById('kpi-orb-status').textContent=orbSet?'LOCKED':'forming...';
+    document.getElementById('l-orb-h').textContent=p(orbH);
+    document.getElementById('l-orb-l').textContent=p(orbL);
+    document.getElementById('kpi-orb-h-sub').textContent=price>orbH?'⚡ BROKEN':price<orbH?'holding':'at level';
+    document.getElementById('kpi-orb-l-sub').textContent=price<orbL?'⚡ BROKEN':price>orbL?'holding':'at level';
+    const th=document.getElementById('t-orb-h');
+    th.textContent=price>orbH?'broken':'holding';
+    th.className='tag '+(price>orbH?'tag-amber':'tag-green');
+    const tl=document.getElementById('t-orb-l');
+    tl.textContent=price<orbL?'broken':'holding';
+    tl.className='tag '+(price<orbL?'tag-amber':'tag-red');
+  }
+  document.getElementById('l-vwap').textContent=p(vwap);
+  const tv=document.getElementById('t-vwap');
+  tv.textContent=aboveVwap?'above':'below';
+  tv.className='tag '+(aboveVwap?'tag-green':'tag-red');
+
+  if(sessH){document.getElementById('kpi-sess-h').textContent=p(sessH);document.getElementById('kpi-sess-h-t').textContent=sessHt;}
+  if(sessL){document.getElementById('kpi-sess-l').textContent=p(sessL);document.getElementById('kpi-sess-l-t').textContent=sessLt;}
+}
+
+function updateTable(latestVwap){
+  const recent=bars.slice(-18).reverse();
+  const volMax=Math.max(...bars.map(b=>b.vol),1);
+  document.getElementById('bar-body').innerHTML=recent.map((b,i)=>{
+    const isUp=b.close>=b.open;
+    const abv=b.close>b.vwap;
+    const vp=Math.min(100,b.vol/volMax*100);
+    const cls=i===0?'cur-row':b.isOrb?'orb-row':'';
+    return `<tr class="${cls}">
+      <td style="color:var(--text2)">${b.time}</td>
+      <td>${b.open.toFixed(2)}</td>
+      <td style="color:var(--accent2)">${b.high.toFixed(2)}</td>
+      <td style="color:var(--red)">${b.low.toFixed(2)}</td>
+      <td style="font-weight:500;color:${isUp?'var(--accent2)':'var(--red)'}">${b.close.toFixed(2)}</td>
+      <td style="color:var(--text2)">${b.vwap.toFixed(2)}</td>
+      <td><span class="badge-sm" style="background:${abv?'rgba(53,240,160,.12)':'rgba(240,53,69,.12)'};color:${abv?'var(--accent2)':'var(--red)'}">${abv?'▲ABV':'▼BLW'}</span></td>
+      <td>${Math.round(b.vol/1000)}K<div class="vol-bar"><div class="vol-fill" style="width:${vp}%"></div></div></td>
+    </tr>`;
+  }).join('');
+}
+
+function updateSnapshot(price,vwap,aboveVwap,time){
+  const vwap_pos=aboveVwap?'ABOVE':'BELOW';
+  const orb_pos=orbSet?(price>orbH?'ABOVE ORB HIGH':price<orbL?'BELOW ORB LOW':'INSIDE ORB'):'ORB FORMING';
+  const chg=openPrice?price-openPrice:0;
+  const snap=
+`SPY SESSION SNAPSHOT — ${time} ET
+─────────────────────────────────────
+Last:      ${p(price)}  (${pn(chg)} from open)
+VWAP:      ${p(vwap)}  [price is ${vwap_pos} VWAP]
+ORB High:  ${p(orbH)}  ${orbSet?'[LOCKED]':'[forming]'}
+ORB Low:   ${p(orbL)}  ${orbSet?'[LOCKED]':'[forming]'}
+ORB Range: ${p(orbH&&orbL?orbH-orbL:null)}
+ORB Pos:   ${orb_pos}
+Sess High: ${p(sessH)}  @ ${sessHt}
+Sess Low:  ${p(sessL)}  @ ${sessLt}
+Prior cls: ${p(PRIOR_CLOSE)}
+Bars done: ${bars.length}
+─────────────────────────────────────`;
+  document.getElementById('claude-snapshot').textContent=snap;
+}
+
+function copyToClipboard(){
+  const txt=document.getElementById('claude-snapshot').textContent;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=event.target;btn.textContent='COPIED!';
+    setTimeout(()=>btn.textContent='COPY',1500);
+  });
+}
+
+// ── Alpaca fetch ──────────────────────────────────────────────────────────────
+async function fetchBars(){
+  if(!apiKey||!secretKey)return;
+
+  const now=new Date();
+  const et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
+  const h=et.getHours(),m=et.getMinutes();
+  if(h<9||(h===9&&m<30)||h>=16){
+    setStatus('','market closed');return;
+  }
+
+  // Build time range: today 9:30 ET to now
+  const today=et.toISOString().split('T')[0];
+  const start=`${today}T09:30:00-04:00`;
+  const end=now.toISOString();
+  const url=`https://data.alpaca.markets/v2/stocks/SPY/bars?timeframe=${barMin}Min&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&limit=200&adjustment=raw&feed=iex`;
+
+  try{
+    const res=await fetch(url,{headers:{'APCA-API-KEY-ID':apiKey,'APCA-API-SECRET-KEY':secretKey}});
+    if(!res.ok){setStatus('err','API error '+res.status);return;}
+    const data=await res.json();
+    if(!data.bars||data.bars.length===0){setStatus('loading','waiting for bars...');return;}
+
+    // Reset and recompute from scratch each fetch (stateless)
+    bars=[];cumTPV=0;cumVol=0;
+    orbH=null;orbL=null;orbSet=false;
+    sessH=null;sessL=null;sessHt='';sessLt='';
+    openPrice=null;lastPrice=null;
+    prevAboveVwap=null;prevAboveOrbH=null;prevAboveOrbL=null;
+    recentVols=[];
+
+    data.bars.forEach(bar=>{
+      const d=new Date(bar.t);
+      const et2=new Date(d.toLocaleString('en-US',{timeZone:'America/New_York'}));
+      const time=`${et2.getHours().toString().padStart(2,'0')}:${et2.getMinutes().toString().padStart(2,'0')}`;
+      processBar(time,bar.o,bar.h,bar.l,bar.c,bar.v);
+    });
+
+    setStatus('live',`live · ${data.bars.length} bars · IEX`);
+  }catch(err){
+    setStatus('err','fetch failed');console.error(err);
+  }
+}
+
+// ── Refresh ring ──────────────────────────────────────────────────────────────
+let ringInterval=null,ringSecs=0,REFRESH_SECS=barMin*60;
+function startRing(){
+  ringSecs=REFRESH_SECS;
+  if(ringInterval)clearInterval(ringInterval);
+  ringInterval=setInterval(()=>{
+    ringSecs--;
+    if(ringSecs<=0){ringSecs=REFRESH_SECS;fetchBars();}
+    const pct=(REFRESH_SECS-ringSecs)/REFRESH_SECS;
+    const offset=75.4-(75.4*pct);
+    document.getElementById('refresh-ring').style.strokeDashoffset=offset;
+    document.getElementById('next-refresh').textContent=`refresh in ${ringSecs}s`;
+  },1000);
+}
+
+// ── Main clock ────────────────────────────────────────────────────────────────
+setInterval(()=>{
+  const now=new Date();
+  const et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
+  const t=et.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const h=et.getHours(),m=et.getMinutes();
+  const open=h>9||(h===9&&m>=30);const closed=h>=16;
+  document.getElementById('market-clock').textContent=`${t} ET — market ${closed?'CLOSED':open?'OPEN':'pre-market'}`;
+},1000);
+
+// ── Start ─────────────────────────────────────────────────────────────────────
+function startFeed(){
+  apiKey=document.getElementById('api-key').value.trim();
+  secretKey=document.getElementById('secret-key').value.trim();
+  barMin=parseInt(document.getElementById('bar-size').value);
+  REFRESH_SECS=barMin*60;
+  if(!apiKey||!secretKey){alert('Enter both API Key and Secret Key');return;}
+  document.getElementById('setup').style.display='none';
+  setStatus('loading','connecting...');
+  fetchBars();
+  startRing();
+}
+</script>
+</body>
+</html>
