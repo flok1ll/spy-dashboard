@@ -7,144 +7,99 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0d0d0f;
-  --bg2: #141417;
-  --bg3: #1a1a1f;
-  --bg4: #202026;
-  --text: #e8e6df;
-  --text2: #8a8880;
-  --text3: #4a4845;
-  --accent: #c8f035;
-  --accent2: #35f0a0;
-  --red: #f03545;
-  --amber: #f0a535;
-  --blue: #35a0f0;
-  --border: rgba(255,255,255,0.07);
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'DM Sans', sans-serif;
+  --bg:#0d0d0f;--bg2:#141417;--bg3:#1a1a1f;--bg4:#202026;
+  --text:#e8e6df;--text2:#8a8880;--text3:#4a4845;
+  --accent:#c8f035;--accent2:#35f0a0;--red:#f03545;--amber:#f0a535;--blue:#35a0f0;--purple:#a035f0;
+  --border:rgba(255,255,255,0.07);--mono:'JetBrains Mono',monospace;--sans:'DM Sans',sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  min-height: 100vh;
-  padding: 1.5rem;
-}
-
-/* ── Grid ── */
-.app { max-width: 900px; margin: 0 auto; }
-.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
-.logo { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: .15em; text-transform: uppercase; }
-.logo span { color: var(--accent); }
-.status-pill { display: flex; align-items: center; gap: 7px; background: var(--bg3); border: 0.5px solid var(--border); border-radius: 99px; padding: 5px 12px; font-family: var(--mono); font-size: 10px; color: var(--text2); }
-.pip { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); }
-.pip.live { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: glow 1.5s infinite; }
-.pip.err { background: var(--red); }
-.pip.loading { background: var(--amber); animation: glow 0.8s infinite; }
-@keyframes glow { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-/* ── Setup panel ── */
-.setup { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
-.setup-title { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; margin-bottom: 12px; }
-.setup-step { font-size: 12px; color: var(--text2); margin-bottom: 6px; line-height: 1.6; }
-.setup-step code { background: var(--bg3); color: var(--accent2); padding: 1px 5px; border-radius: 3px; font-family: var(--mono); font-size: 11px; }
-.fields { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-input[type=text], input[type=password] {
-  background: var(--bg3); border: 0.5px solid var(--border); border-radius: 6px;
-  color: var(--text); font-family: var(--mono); font-size: 12px;
-  padding: 8px 12px; flex: 1; min-width: 160px; outline: none;
-  transition: border-color .2s;
-}
-input:focus { border-color: rgba(200,240,53,0.4); }
-input::placeholder { color: var(--text3); }
-select {
-  background: var(--bg3); border: 0.5px solid var(--border); border-radius: 6px;
-  color: var(--text); font-family: var(--mono); font-size: 12px; padding: 8px 10px; outline: none;
-}
-.btn {
-  padding: 8px 16px; border-radius: 6px; border: 0.5px solid var(--border);
-  font-family: var(--mono); font-size: 12px; cursor: pointer; white-space: nowrap;
-  background: var(--bg3); color: var(--text2); transition: all .15s;
-}
-.btn:hover { background: var(--bg4); color: var(--text); }
-.btn.primary { background: var(--accent); color: #0d0d0f; border-color: var(--accent); font-weight: 600; }
-.btn.primary:hover { opacity: .85; }
-.btn.sm { padding: 5px 10px; font-size: 10px; }
-
-/* ── Main metrics ── */
-.price-strip { display: grid; grid-template-columns: auto 1fr; gap: 1.25rem; margin-bottom: 1.25rem; align-items: center; }
-.price-main { font-family: var(--mono); font-size: 52px; font-weight: 300; letter-spacing: -.02em; line-height: 1; }
-.price-main.up { color: var(--accent2); }
-.price-main.down { color: var(--red); }
-.price-main.flat { color: var(--text); }
-.price-meta { font-family: var(--mono); font-size: 13px; margin-top: 6px; }
-.price-meta.up { color: var(--accent2); }
-.price-meta.down { color: var(--red); }
-
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 8px; margin-bottom: 1.25rem; }
-.kpi { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 12px 14px; }
-.kpi-label { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 6px; }
-.kpi-val { font-family: var(--mono); font-size: 18px; font-weight: 400; }
-.kpi-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 4px; }
-.kv-green { color: var(--accent2); }
-.kv-red { color: var(--red); }
-.kv-amber { color: var(--amber); }
-.kv-blue { color: var(--blue); }
-.kv-accent { color: var(--accent); }
-
-/* ── Levels ── */
-.levels-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
-@media(max-width:560px){.levels-grid{grid-template-columns:1fr}}
-.panel { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
-.panel-title { font-family: var(--mono); font-size: 9px; color: var(--text3); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
-.level-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 0.5px solid var(--border); font-family: var(--mono); font-size: 12px; }
-.level-row:last-child { border-bottom: none; }
-.level-name { color: var(--text2); }
-.level-price { font-weight: 500; }
-.tag { font-size: 9px; padding: 2px 6px; border-radius: 99px; }
-.tag-green { background: rgba(53,240,160,.15); color: var(--accent2); }
-.tag-red { background: rgba(240,53,69,.15); color: var(--red); }
-.tag-amber { background: rgba(240,165,53,.15); color: var(--amber); }
-.tag-gray { background: rgba(255,255,255,.05); color: var(--text3); }
-
-/* ── Alerts ── */
-.alerts-box { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 1.25rem; max-height: 220px; overflow-y: auto; }
-.alert-item { display: flex; gap: 10px; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; }
-.alert-item:last-child { border-bottom: none; }
-.alert-time { font-family: var(--mono); font-size: 10px; color: var(--text3); min-width: 40px; padding-top: 1px; }
-.alert-body { line-height: 1.5; }
-.alert-bull { color: var(--accent2); }
-.alert-bear { color: var(--red); }
-.alert-info { color: var(--blue); }
-.alert-warn { color: var(--amber); }
-.no-alerts { color: var(--text3); font-family: var(--mono); font-size: 11px; text-align: center; padding: 1rem; }
-
-/* ── Claude copy box ── */
-.copy-panel { background: var(--bg2); border: 0.5px solid var(--accent); border-radius: 10px; padding: 14px 16px; margin-bottom: 1.25rem; }
-.copy-title { font-family: var(--mono); font-size: 9px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-.copy-text { font-family: var(--mono); font-size: 11px; color: var(--text2); line-height: 1.9; white-space: pre-wrap; background: var(--bg3); border-radius: 6px; padding: 10px 12px; }
-.copy-text span.hi { color: var(--text); }
-
-/* ── Bar table ── */
-.bar-wrap { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
-.bar-table { width: 100%; font-family: var(--mono); font-size: 11px; border-collapse: collapse; }
-.bar-table th { color: var(--text3); font-weight: 400; padding: 0 0 8px; text-align: left; border-bottom: 0.5px solid var(--border); padding-right: 12px; letter-spacing: .06em; font-size: 9px; text-transform: uppercase; }
-.bar-table td { padding: 5px 12px 5px 0; border-bottom: 0.5px solid rgba(255,255,255,0.04); vertical-align: middle; }
-.bar-table tr.orb-row td { background: rgba(240,165,53,.05); }
-.bar-table tr.cur-row td { background: rgba(53,160,240,.06); }
-.vol-bar { height: 2px; background: var(--bg4); border-radius: 1px; margin-top: 3px; overflow: hidden; }
-.vol-fill { height: 100%; background: var(--blue); border-radius: 1px; }
-.badge-sm { font-size: 9px; padding: 1px 5px; border-radius: 99px; }
-
-/* ── Refresh ring ── */
-.refresh-ring { position: relative; width: 28px; height: 28px; }
-.refresh-ring svg { transform: rotate(-90deg); }
-.refresh-ring circle { fill: none; stroke: var(--text3); stroke-width: 2; }
-.refresh-ring .prog { stroke: var(--accent); stroke-dasharray: 75.4; stroke-dashoffset: 75.4; transition: stroke-dashoffset 1s linear; }
-
-.top-row { display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
-.market-time { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;padding:1.5rem}
+.app{max-width:960px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
+.logo{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:.15em;text-transform:uppercase}
+.logo span{color:var(--accent)}
+.status-pill{display:flex;align-items:center;gap:7px;background:var(--bg3);border:0.5px solid var(--border);border-radius:99px;padding:5px 12px;font-family:var(--mono);font-size:10px;color:var(--text2)}
+.pip{width:6px;height:6px;border-radius:50%;background:var(--text3)}
+.pip.live{background:var(--accent);box-shadow:0 0 8px var(--accent);animation:glow 1.5s infinite}
+.pip.err{background:var(--red)}.pip.loading{background:var(--amber);animation:glow .8s infinite}
+@keyframes glow{0%,100%{opacity:1}50%{opacity:.3}}
+.setup{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem}
+.setup-title{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.1em;margin-bottom:12px}
+.setup-step{font-size:12px;color:var(--text2);margin-bottom:6px;line-height:1.6}
+.setup-step code{background:var(--bg3);color:var(--accent2);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-size:11px}
+.fields{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+input[type=text],input[type=password]{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 12px;flex:1;min-width:160px;outline:none;transition:border-color .2s}
+input:focus{border-color:rgba(200,240,53,0.4)}
+input::placeholder{color:var(--text3)}
+select{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 10px;outline:none}
+.btn{padding:8px 16px;border-radius:6px;border:0.5px solid var(--border);font-family:var(--mono);font-size:12px;cursor:pointer;white-space:nowrap;background:var(--bg3);color:var(--text2);transition:all .15s}
+.btn:hover{background:var(--bg4);color:var(--text)}
+.btn.primary{background:var(--accent);color:#0d0d0f;border-color:var(--accent);font-weight:600}
+.btn.primary:hover{opacity:.85}
+.btn.sm{padding:5px 10px;font-size:10px}
+.tabs{display:flex;gap:5px;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{padding:5px 14px;border-radius:6px;border:0.5px solid var(--border);background:transparent;font-family:var(--mono);font-size:10px;cursor:pointer;color:var(--text3);letter-spacing:.06em;text-transform:uppercase}
+.tab-btn.on{background:var(--bg3);color:var(--accent);border-color:rgba(200,240,53,0.3)}
+.sec{display:none}.sec.on{display:block}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:1rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1rem}
+@media(max-width:680px){.grid3{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:440px){.grid3{grid-template-columns:1fr}}
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:.9rem}
+.ct{font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px}
+.kpi{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:12px 14px}
+.kl{font-family:var(--mono);font-size:9px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em}
+.kv{font-family:var(--mono);font-size:20px;font-weight:400}
+.ks{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:4px}
+.price-big{font-family:var(--mono);font-size:48px;font-weight:300;letter-spacing:-.02em;line-height:1}
+.price-big.up{color:var(--accent2)}.price-big.down{color:var(--red)}.price-big.flat{color:var(--text)}
+.price-chg{font-family:var(--mono);font-size:13px;margin-top:6px}
+.price-chg.up{color:var(--accent2)}.price-chg.down{color:var(--red)}
+.kv-g{color:var(--accent2)}.kv-r{color:var(--red)}.kv-a{color:var(--amber)}.kv-b{color:var(--blue)}.kv-ac{color:var(--accent)}.kv-p{color:var(--purple)}
+.level-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0.5px solid var(--border);font-family:var(--mono);font-size:11px}
+.level-row:last-child{border-bottom:none}
+.ln{color:var(--text2)}.lp{font-weight:500}
+.tag{font-size:9px;padding:2px 6px;border-radius:99px;font-family:var(--mono)}
+.tg{background:rgba(53,240,160,.12);color:var(--accent2)}.tr{background:rgba(240,53,69,.12);color:var(--red)}
+.ta{background:rgba(240,165,53,.12);color:var(--amber)}.tb{background:rgba(53,160,240,.12);color:var(--blue)}
+.tgr{background:rgba(255,255,255,.06);color:var(--text3)}.tp{background:rgba(160,53,240,.12);color:var(--purple)}
+.score-wrap{background:var(--bg3);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.score-bar-bg{height:8px;background:var(--bg4);border-radius:4px;margin:6px 0 2px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:4px;transition:width .5s}
+.sig-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:12px}
+.sig-row:last-child{border-bottom:none}
+.sig-label{color:var(--text2);flex:1;font-size:11px}
+.sig-val{font-family:var(--mono);font-size:11px;min-width:60px;text-align:right}
+.sig-acc{font-size:10px;color:var(--text3);min-width:36px;text-align:right}
+.dot-ind{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.alert-feed{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:5px}
+.alert-item{display:flex;gap:10px;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:11px}
+.alert-item:last-child{border-bottom:none}
+.at{font-family:var(--mono);font-size:10px;color:var(--text3);min-width:38px;padding-top:1px}
+.ab{line-height:1.5}
+.abull{color:var(--accent2)}.abear{color:var(--red)}.ainfo{color:var(--blue)}.awarn{color:var(--amber)}
+.no-alerts{color:var(--text3);font-family:var(--mono);font-size:11px;text-align:center;padding:1rem}
+.copy-panel{background:var(--bg2);border:0.5px solid rgba(200,240,53,0.25);border-radius:10px;padding:14px 16px;margin-bottom:.9rem}
+.copy-title{font-family:var(--mono);font-size:9px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.copy-text{font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.9;white-space:pre-wrap;background:var(--bg3);border-radius:6px;padding:10px 12px}
+.bar-table{width:100%;font-family:var(--mono);font-size:11px;border-collapse:collapse}
+.bar-table th{color:var(--text3);font-weight:400;padding:0 0 8px;text-align:left;border-bottom:0.5px solid var(--border);padding-right:10px;font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+.bar-table td{padding:5px 10px 5px 0;border-bottom:0.5px solid rgba(255,255,255,0.04);vertical-align:middle}
+.bar-table tr.orb-row td{background:rgba(240,165,53,.05)}
+.bar-table tr.cur-row td{background:rgba(53,160,240,.06)}
+.vol-bar{height:2px;background:var(--bg4);border-radius:1px;margin-top:3px;overflow:hidden}
+.vol-fill{height:100%;background:var(--blue);border-radius:1px}
+.ring-wrap{position:relative;width:28px;height:28px}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-wrap circle{fill:none;stroke:var(--text3);stroke-width:2}
+.ring-prog{stroke:var(--accent);stroke-dasharray:75.4;stroke-dashoffset:75.4;transition:stroke-dashoffset 1s linear}
+.top-strip{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.context-banner{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:1rem;font-size:11px;color:var(--text2);line-height:1.7}
+.context-banner strong{color:var(--text)}
+.context-banner .hl-bull{color:var(--accent2);font-weight:500}
+.context-banner .hl-bear{color:var(--red);font-weight:500}
+.context-banner .hl-warn{color:var(--amber);font-weight:500}
+.rule-box{background:var(--bg3);border-radius:6px;padding:8px 10px;margin-top:6px;font-family:var(--mono);font-size:10px;color:var(--accent);border-left:2px solid var(--accent)}
 </style>
 </head>
 <body>
@@ -152,8 +107,8 @@ select {
 
 <div class="header">
   <div>
-    <div class="logo">SPY <span>//</span> LIVE MARKET</div>
-    <div style="font-size:11px;color:var(--text3);margin-top:3px;font-family:var(--mono)" id="market-clock">--:-- ET</div>
+    <div class="logo">SPY <span>//</span> LIVE MARKET · 217-DAY DATASET</div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-top:3px" id="market-clock">--:-- ET</div>
   </div>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
     <div class="status-pill"><div class="pip" id="pip"></div><span id="status-txt">disconnected</span></div>
@@ -164,133 +119,347 @@ select {
 
 <!-- Setup -->
 <div class="setup" id="setup">
-  <div class="setup-title">// ALPACA API SETUP</div>
-  <div class="setup-step">Get keys from <strong style="color:var(--text)">alpaca.markets</strong> → Paper Trading → API Keys → Generate. Use <code>Paper Trading</code> keys for free real-time data.</div>
+  <div class="setup-title">// ALPACA PAPER TRADING — API SETUP</div>
+  <div class="setup-step">Keys from <strong style="color:var(--text)">alpaca.markets</strong> → Paper Trading → API Keys. Use paper trading keys for free real-time IEX data.</div>
   <div class="fields">
     <input type="text" id="api-key" placeholder="API Key ID  (PKXXXXXXX...)"/>
     <input type="password" id="secret-key" placeholder="Secret Key"/>
-    <select id="bar-size"><option value="2" selected>2-min bars</option>
-    <option value="3">3-min bars</option><option value="1">1-min bars</option><option value="5">5-min bars</option></select>
+    <select id="bar-size"><option value="2" selected>2-min bars</option><option value="3">3-min bars</option><option value="1">1-min bars</option><option value="5">5-min bars</option></select>
     <button class="btn primary" onclick="startFeed()">CONNECT</button>
-    <button class="btn sm" onclick="document.getElementById('setup').style.display=\"none\"">HIDE</button>
+    <button class="btn sm" onclick="document.getElementById('setup').style.display='none'">HIDE</button>
   </div>
 </div>
 
-<!-- Price strip -->
-<div class="top-row">
-  <div>
-    <div class="price-main flat" id="price-display">—</div>
-    <div class="price-meta" id="price-change">—</div>
-  </div>
-  <div style="flex:1"></div>
-  <div class="refresh-ring" title="Next refresh">
-    <svg width="28" height="28" viewBox="0 0 28 28">
-      <circle cx="14" cy="14" r="12"/>
-      <circle class="prog" id="refresh-ring" cx="14" cy="14" r="12"/>
-    </svg>
-  </div>
-  <div style="font-family:var(--mono);font-size:10px;color:var(--text3)" id="next-refresh">next refresh: --</div>
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab-btn on" onclick="showTab('live',this)">LIVE</button>
+  <button class="tab-btn" onclick="showTab('indicator',this)">DIRECTION INDICATOR</button>
+  <button class="tab-btn" onclick="showTab('context',this)">TODAY'S CONTEXT</button>
+  <button class="tab-btn" onclick="showTab('rules',this)">TRADE RULES</button>
 </div>
 
-<!-- KPIs -->
-<div class="kpi-grid">
-  <div class="kpi"><div class="kpi-label">VWAP</div><div class="kpi-val" id="kpi-vwap">—</div><div class="kpi-sub" id="kpi-vwap-pos">—</div></div>
-  <div class="kpi"><div class="kpi-label">ORB High</div><div class="kpi-val kv-green" id="kpi-orb-h">—</div><div class="kpi-sub" id="kpi-orb-h-sub">9:30–10:00</div></div>
-  <div class="kpi"><div class="kpi-label">ORB Low</div><div class="kpi-val kv-red" id="kpi-orb-l">—</div><div class="kpi-sub" id="kpi-orb-l-sub">9:30–10:00</div></div>
-  <div class="kpi"><div class="kpi-label">ORB Range</div><div class="kpi-val kv-amber" id="kpi-orb-range">—</div><div class="kpi-sub" id="kpi-orb-status">forming...</div></div>
-  <div class="kpi"><div class="kpi-label">Session High</div><div class="kpi-val kv-accent" id="kpi-sess-h">—</div><div class="kpi-sub" id="kpi-sess-h-t">—</div></div>
-  <div class="kpi"><div class="kpi-label">Session Low</div><div class="kpi-val kv-blue" id="kpi-sess-l">—</div><div class="kpi-sub" id="kpi-sess-l-t">—</div></div>
-</div>
-
-<!-- Levels + alerts -->
-<div class="levels-grid">
-  <div class="panel">
-    <div class="panel-title">// Key levels</div>
-    <div class="level-row"><div class="level-name">Prior close</div><div class="level-price" id="l-prior">$679.86</div><div class="tag tag-gray">Apr 9</div></div>
-    <div class="level-row"><div class="level-name">ORB High</div><div class="level-price" id="l-orb-h">—</div><div class="tag tag-green" id="t-orb-h">—</div></div>
-    <div class="level-row"><div class="level-name">ORB Low</div><div class="level-price" id="l-orb-l">—</div><div class="tag tag-red" id="t-orb-l">—</div></div>
-    <div class="level-row"><div class="level-name">VWAP</div><div class="level-price" id="l-vwap">—</div><div class="tag" id="t-vwap">—</div></div>
-    <div class="level-row"><div class="level-name">Prev high</div><div class="level-price">$681.16</div><div class="tag tag-gray">R</div></div>
-    <div class="level-row"><div class="level-name">Prev low</div><div class="level-price">$673.77</div><div class="tag tag-gray">S</div></div>
+<!-- ═══ LIVE TAB ═══ -->
+<div class="sec on" id="sec-live">
+  <!-- Price strip -->
+  <div class="top-strip">
+    <div>
+      <div class="price-big flat" id="price-display">—</div>
+      <div class="price-chg" id="price-chg">—</div>
+    </div>
+    <div style="flex:1"></div>
+    <div style="text-align:right">
+      <div class="ring-wrap" style="margin-left:auto;margin-bottom:4px">
+        <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12"/><circle class="ring-prog" id="ring" cx="14" cy="14" r="12"/></svg>
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text3)" id="next-refresh">--</div>
+    </div>
   </div>
-  <div class="panel">
-    <div class="panel-title">// Alert filters</div>
-    <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-orb-bull" checked> ORB high break <span class="tag tag-green" style="margin-left:4px">bull BOS</span></label>
-    <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-orb-bear" checked> ORB low break <span class="tag tag-red" style="margin-left:4px">bear BOS</span></label>
-    <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-vwap" checked> VWAP cross <span class="tag tag-amber" style="margin-left:4px">pivot</span></label>
-    <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-orb-set" checked> ORB locked 10:00 <span class="tag" style="margin-left:4px;background:rgba(53,160,240,.15);color:var(--blue)">info</span></label>
-    <label style="display:flex;gap:8px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-vol" checked> Volume spike ×1.8</label>
+
+  <!-- KPIs -->
+  <div class="grid3">
+    <div class="kpi"><div class="kl">VWAP</div><div class="kv" id="kv-vwap">—</div><div class="ks" id="ks-vwap">—</div></div>
+    <div class="kpi"><div class="kl">ORB High</div><div class="kv kv-g" id="kv-orb-h">—</div><div class="ks" id="ks-orb-h">9:30–10:00</div></div>
+    <div class="kpi"><div class="kl">ORB Low</div><div class="kv kv-r" id="kv-orb-l">—</div><div class="ks" id="ks-orb-l">9:30–10:00</div></div>
+    <div class="kpi"><div class="kl">ORB Range</div><div class="kv kv-a" id="kv-orb-range">—</div><div class="ks" id="ks-orb-status">forming...</div></div>
+    <div class="kpi"><div class="kl">Session High</div><div class="kv kv-ac" id="kv-sess-h">—</div><div class="ks" id="ks-sess-h">—</div></div>
+    <div class="kpi"><div class="kl">Session Low</div><div class="kv kv-b" id="kv-sess-l">—</div><div class="ks" id="ks-sess-l">—</div></div>
+  </div>
+
+  <div class="grid2">
+    <!-- Key levels -->
+    <div class="card">
+      <div class="ct">// Key levels</div>
+      <div class="level-row"><div class="ln">Prior close</div><div class="lp" id="l-prior">$686.50</div><div class="tag tgr">Apr 13</div></div>
+      <div class="level-row"><div class="ln">ORB High</div><div class="lp" id="l-orb-h">—</div><div class="tag tg" id="t-orb-h">—</div></div>
+      <div class="level-row"><div class="ln">ORB Low</div><div class="lp" id="l-orb-l">—</div><div class="tag tr" id="t-orb-l">—</div></div>
+      <div class="level-row"><div class="ln">VWAP</div><div class="lp" id="l-vwap">—</div><div class="tag" id="t-vwap">—</div></div>
+      <div class="level-row"><div class="ln">Apr 13 high</div><div class="lp">$686.50</div><div class="tag ta">R</div></div>
+      <div class="level-row"><div class="ln">Apr 13 low</div><div class="lp">$676.58</div><div class="tag tb">S</div></div>
+      <div class="level-row"><div class="ln">Apr 9 close</div><div class="lp">$686.13</div><div class="tag tgr">ref</div></div>
+    </div>
+    <!-- Alert filters -->
+    <div class="card">
+      <div class="ct">// Alert filters</div>
+      <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-orb-bull" checked> ORB high break <span class="tag tg" style="margin-left:4px">bull BOS</span></label>
+      <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-orb-bear" checked> ORB low break <span class="tag tr" style="margin-left:4px">bear BOS</span></label>
+      <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-vwap" checked> VWAP cross <span class="tag ta" style="margin-left:4px">pivot</span></label>
+      <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-orb-set" checked> ORB locked 10:00 <span class="tag tb" style="margin-left:4px">info</span></label>
+      <label style="display:flex;gap:8px;align-items:center;margin-bottom:9px;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-vol" checked> Volume spike ×1.8 <span class="tag ta" style="margin-left:4px">vol</span></label>
+      <label style="display:flex;gap:8px;align-items:center;font-size:12px;cursor:pointer;color:var(--text2)"><input type="checkbox" id="al-reversal" checked> Bear reversal signal <span class="tag tp" style="margin-left:4px">pattern</span></label>
+    </div>
+  </div>
+
+  <!-- Claude snapshot -->
+  <div class="copy-panel">
+    <div class="copy-title">
+      <span>// PASTE TO CLAUDE — session snapshot</span>
+      <button class="btn sm" onclick="copySnap()">COPY</button>
+    </div>
+    <div class="copy-text" id="snap">Connect Alpaca to generate snapshot...</div>
+  </div>
+
+  <!-- Alert feed -->
+  <div class="card">
+    <div class="ct">// Alert log</div>
+    <div class="alert-feed" id="alert-feed"><div class="no-alerts">No alerts yet</div></div>
+  </div>
+
+  <!-- Bar table -->
+  <div class="card">
+    <div class="ct">// Completed bars</div>
+    <div style="overflow-x:auto">
+    <table class="bar-table">
+      <thead><tr><th>Time</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>VWAP</th><th>Pos</th><th>Volume</th></tr></thead>
+      <tbody id="bar-body"><tr><td colspan="8" style="color:var(--text3);padding:12px 0;text-align:center">Waiting for bars...</td></tr></tbody>
+    </table>
+    </div>
   </div>
 </div>
 
-<!-- Claude copy box -->
-<div class="copy-panel">
-  <div class="copy-title">
-    <span>// PASTE TO CLAUDE — session snapshot</span>
-    <button class="btn sm" onclick="copyToClipboard()">COPY</button>
+<!-- ═══ DIRECTION INDICATOR TAB ═══ -->
+<div class="sec" id="sec-indicator">
+  <div class="context-banner">
+    Score each signal at <strong>9:45 AM</strong> after the first 5 bars. Total score determines session bias. Based on <strong>217 trading days</strong> of SPY data (Jun 2025 – Apr 2026).
   </div>
-  <div class="copy-text" id="claude-snapshot">Connect Alpaca to generate snapshot...</div>
+
+  <div class="card">
+    <div class="ct">// Live direction score — update at 9:45</div>
+    <div class="score-wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text2)">Direction score</span>
+        <span style="font-family:var(--mono);font-size:20px;font-weight:500" id="dir-score">0</span>
+      </div>
+      <div class="score-bar-bg">
+        <div class="score-bar-fill" id="score-bar" style="width:50%;background:var(--text3)"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text3)">
+        <span>–9 BEAR</span><span>0 NEUTRAL</span><span>BULL +9</span>
+      </div>
+    </div>
+    <div style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:10px">Score ≥ +3 = bullish bias · Score ≤ –3 = bearish bias · Between = sit out</div>
+
+    <div class="sig-row">
+      <div class="dot-ind" id="d-fb" style="background:var(--text3)"></div>
+      <div class="sig-label">First bar direction + body size (>55% range)</div>
+      <div class="sig-val" id="sv-fb">—</div>
+      <div class="sig-acc" style="color:var(--text3)">weight 2×</div>
+    </div>
+    <div class="sig-row">
+      <div class="dot-ind" id="d-vwap" style="background:var(--text3)"></div>
+      <div class="sig-label">Price vs VWAP at 9:45</div>
+      <div class="sig-val" id="sv-vwap">—</div>
+      <div class="sig-acc" style="color:var(--text3)">weight 2×</div>
+    </div>
+    <div class="sig-row">
+      <div class="dot-ind" id="d-gap" style="background:var(--text3)"></div>
+      <div class="sig-label">Gap direction from prior close ($686.50)</div>
+      <div class="sig-val" id="sv-gap">—</div>
+      <div class="sig-acc" style="color:var(--text3)">weight 1×</div>
+    </div>
+    <div class="sig-row">
+      <div class="dot-ind" id="d-vol" style="background:var(--text3)"></div>
+      <div class="sig-label">First bar volume vs avg (1.38M)</div>
+      <div class="sig-val" id="sv-vol">—</div>
+      <div class="sig-acc" style="color:var(--text3)">weight 1×</div>
+    </div>
+    <div class="sig-row">
+      <div class="dot-ind" id="d-orb" style="background:var(--text3)"></div>
+      <div class="sig-label">ORB range vs avg ($2.56)</div>
+      <div class="sig-val" id="sv-orb">—</div>
+      <div class="sig-acc" style="color:var(--text3)">weight 1×</div>
+    </div>
+    <div class="sig-row">
+      <div class="dot-ind" id="d-lowvol" style="background:var(--text3)"></div>
+      <div class="sig-label">Low vol gap-down = fade candidate</div>
+      <div class="sig-val" id="sv-lowvol">—</div>
+      <div class="sig-acc" style="color:var(--purple)">reversal</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="ct">// Signal accuracy (217 days)</div>
+      <div class="sig-row"><div class="sig-label">Bear quality → neg day</div><div class="sig-val kv-r">87%</div><div class="sig-acc">23 days</div></div>
+      <div class="sig-row"><div class="sig-label">Bull quality → pos day</div><div class="sig-val kv-g">76%</div><div class="sig-acc">25 days</div></div>
+      <div class="sig-row"><div class="sig-label">Strong DOWN bar → neg</div><div class="sig-val kv-r">85%</div><div class="sig-acc">39 days</div></div>
+      <div class="sig-row"><div class="sig-label">Below VWAP 9:45 → neg</div><div class="sig-val kv-a">64%</div><div class="sig-acc">107 days</div></div>
+      <div class="sig-row"><div class="sig-label">Above VWAP 9:45 → pos</div><div class="sig-val kv-g">65%</div><div class="sig-acc">110 days</div></div>
+      <div class="sig-row"><div class="sig-label">Bear open reversal (gap)</div><div class="sig-val kv-p">6%</div><div class="sig-acc">13/217</div></div>
+    </div>
+    <div class="card">
+      <div class="ct">// Bear reversal detection</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:10px">Low vol gap-down that reverses — the Apr 13 pattern. Happens 6% of days (13/217). Key tell: morning drop &lt;$1.50 from open to low.</div>
+      <div class="sig-row"><div class="sig-label">Avg morning drop (reversal)</div><div class="sig-val kv-p">–$3.12</div></div>
+      <div class="sig-row"><div class="sig-label">Avg morning drop (continuation)</div><div class="sig-val kv-r">–$6.74</div></div>
+      <div class="sig-row"><div class="sig-label">Apr 13 morning drop</div><div class="sig-val kv-g">–$0.83</div></div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--purple);margin-top:8px">Drop &lt;$2 + low vol first bar = watch for VWAP reclaim</div>
+    </div>
+  </div>
 </div>
 
-<!-- Alerts -->
-<div class="alerts-box">
-  <div class="no-alerts" id="alerts-placeholder">No alerts yet — connect to start monitoring</div>
+<!-- ═══ TODAY'S CONTEXT TAB ═══ -->
+<div class="sec" id="sec-context">
+  <div class="context-banner">
+    <strong>Tuesday April 14, 2026 — what you're walking into</strong><br>
+    <span class="hl-warn">⚠ High-impact day.</span> Three major bank earnings pre-market + active US naval blockade of Iranian ports. Expect wider-than-normal ORB and headline-driven volatility throughout the session.
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="ct">// Pre-market catalysts</div>
+      <div class="level-row"><div class="ln">JPMorgan (JPM)</div><div class="lp" style="color:var(--amber)">7:00 AM ET</div><div class="tag ta">earnings</div></div>
+      <div class="level-row"><div class="ln">Citigroup (C)</div><div class="lp" style="color:var(--amber)">pre-market</div><div class="tag ta">earnings</div></div>
+      <div class="level-row"><div class="ln">Wells Fargo (WFC)</div><div class="lp" style="color:var(--amber)">pre-market</div><div class="tag ta">earnings</div></div>
+      <div class="level-row"><div class="ln">Dimon conference call</div><div class="lp" style="color:var(--amber)">~8:30 AM</div><div class="tag ta">key risk</div></div>
+      <div class="level-row"><div class="ln">Israel-Lebanon talks</div><div class="lp" style="color:var(--blue)">Washington</div><div class="tag tb">geopolitical</div></div>
+      <div class="level-row"><div class="ln">US Hormuz blockade</div><div class="lp" style="color:var(--red)">active</div><div class="tag tr">live risk</div></div>
+    </div>
+    <div class="card">
+      <div class="ct">// Key levels for tomorrow</div>
+      <div class="level-row"><div class="ln">Prior close</div><div class="lp">$686.50</div><div class="tag tgr">Apr 13</div></div>
+      <div class="level-row"><div class="ln">Apr 13 high</div><div class="lp">$686.50</div><div class="tag ta">near-term R</div></div>
+      <div class="level-row"><div class="ln">Apr 13 low</div><div class="lp">$676.58</div><div class="tag tb">support</div></div>
+      <div class="level-row"><div class="ln">Apr 9 close</div><div class="lp">$686.13</div><div class="tag tgr">ref</div></div>
+      <div class="level-row"><div class="ln">52-week high</div><div class="lp">$697.84</div><div class="tag tg">target zone</div></div>
+      <div class="level-row"><div class="ln">Avg ORB (earnings days)</div><div class="lp">$3.50–5.00</div><div class="tag ta">expect wider</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">// Session plan — April 14</div>
+    <div class="sig-row">
+      <div class="dot-ind" style="background:var(--amber)"></div>
+      <div class="sig-label" style="color:var(--text)"><strong>Pre-market (7:00–9:29)</strong> — JPMorgan numbers hit at 7AM. Dimon's war commentary at ~8:30 will set the pre-market direction. Do NOT trade pre-market. Note gap direction only.</div>
+    </div>
+    <div class="sig-row">
+      <div class="dot-ind" style="background:var(--blue)"></div>
+      <div class="sig-label" style="color:var(--text)"><strong>9:30–9:44</strong> — Watch first bar size, direction, and volume vs 1.38M avg. Score the direction indicator mentally. Do not trade.</div>
+    </div>
+    <div class="sig-row">
+      <div class="dot-ind" style="background:var(--accent)"></div>
+      <div class="sig-label" style="color:var(--text)"><strong>9:45</strong> — Run full direction indicator. Score ≥ +3 = look for bull setup. Score ≤ –3 = look for bear setup. Between = sit out.</div>
+    </div>
+    <div class="sig-row">
+      <div class="dot-ind" style="background:var(--accent2)"></div>
+      <div class="sig-label" style="color:var(--text)"><strong>10:00</strong> — ORB locks. Note the range. If range > $3.50 it's a wide ORB day — adjust stops proportionally. Entry triggers only valid after this bar.</div>
+    </div>
+    <div class="sig-row">
+      <div class="dot-ind" style="background:var(--purple)"></div>
+      <div class="sig-label" style="color:var(--text)"><strong>Bear reversal watch</strong> — If gap-down + first bar vol &lt; 1.38M + morning drop &lt; $1.50, the Apr 13 reversal pattern is active. Exit puts at VWAP reclaim — no exceptions.</div>
+    </div>
+    <div class="rule-box">APR 13 LESSON: EXIT PUTS WHEN VWAP IS RECLAIMED. ONE BAR. NO DEBATE.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="ct">// What JPM earnings mean for SPY</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.8">
+        <strong style="color:var(--text)">Beat + bullish guidance:</strong> Gap up open, sector rotation into financials, follow-through bull day likely if VWAP holds.<br><br>
+        <strong style="color:var(--text)">Miss or cautious Dimon:</strong> Gap down, war impact fears re-priced, potential bear continuation.<br><br>
+        <strong style="color:var(--text)">Beat but cautious war tone:</strong> Chop day — Dimon always telegraphs risk. Watch for mixed signals and sit out if ORB is unclear.
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">// CPI day pattern reminder</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.8">
+        Earnings days behave like CPI days — only <strong style="color:var(--text)">35% of day range</strong> set by 10:00. The bulk of the move develops 10:30–12:00.<br><br>
+        <strong style="color:var(--text)">Don't chase the gap.</strong> Gap-up CPI days fade 78% of the time. Wait for the ORB structure to commit before entering.<br><br>
+        Expected range: <strong style="color:var(--amber)">$5–8</strong> given three bank earnings + active blockade.
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Bar table -->
-<div class="bar-wrap" style="margin-top:1.25rem">
-  <div class="panel-title" style="margin-bottom:12px">// Completed bars</div>
-  <div style="overflow-x:auto">
-  <table class="bar-table">
-    <thead><tr><th>Time</th><th>Open</th><th>High</th><th>Low</th><th>Close</th><th>VWAP</th><th>vs VWAP</th><th>Volume</th></tr></thead>
-    <tbody id="bar-body"><tr><td colspan="8" style="color:var(--text3);padding:12px 0;text-align:center">Waiting for bars...</td></tr></tbody>
-  </table>
+<!-- ═══ TRADE RULES TAB ═══ -->
+<div class="sec" id="sec-rules">
+  <div class="card">
+    <div class="ct">// Strategy 5 — long only (best performer: 217 days, PF 2.79)</div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--accent)"></div><div class="sig-label" style="color:var(--text)"><strong>Gate 1:</strong> First bar body &gt; 55% of its range — green candle</div><div class="sig-val kv-ac">required</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--accent)"></div><div class="sig-label" style="color:var(--text)"><strong>Gate 2:</strong> Price above VWAP at 9:45 (4th–5th bar confirms)</div><div class="sig-val kv-ac">required</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--accent)"></div><div class="sig-label" style="color:var(--text)"><strong>Gate 3:</strong> Pullback to VWAP between 10:00–12:00 then closes green above VWAP</div><div class="sig-val kv-ac">entry</div></div>
+    <div style="background:var(--bg3);border-radius:6px;padding:10px 12px;margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8">
+      Entry: VWAP pullback bar close<br>
+      Stop: 0.5× ORB range below entry<br>
+      Target: 1.2× ORB range above entry<br>
+      Fire rate: ~1 trade per week — most days are sit-out days
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">// Bear ORB break setup</div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--red)"></div><div class="sig-label" style="color:var(--text)"><strong>Signal:</strong> Bear quality day (87% accuracy) — strong down first bar + below VWAP at 9:45</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--red)"></div><div class="sig-label" style="color:var(--text)"><strong>Entry trigger:</strong> Bar closes below ORB low AND below VWAP — after 10:00 only</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--red)"></div><div class="sig-label" style="color:var(--text)"><strong>Stop:</strong> Above ORB high. Target: 1× ORB range below entry</div></div>
+    <div class="rule-box" style="border-color:var(--red);color:var(--red)">CRITICAL: EXIT PUTS IMMEDIATELY WHEN PRICE RECLAIMS VWAP — ONE BAR CLOSE ABOVE VWAP = EXIT. NO EXCEPTIONS. APR 13 COST $500.</div>
+  </div>
+
+  <div class="card">
+    <div class="ct">// Bear reversal pattern (Apr 13 type)</div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--purple)"></div><div class="sig-label" style="color:var(--text)">Gap down open + first bar vol &lt; 1.38M (low institutional conviction)</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--purple)"></div><div class="sig-label" style="color:var(--text)">Morning drop from open to low &lt; $1.50 (shallow = reversal prone)</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--purple)"></div><div class="sig-label" style="color:var(--text)">VWAP reclaim after the low = bull thesis active, exit puts immediately</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--purple)"></div><div class="sig-label" style="color:var(--text)">Bull ORB break after VWAP reclaim = call entry (avg timing: 11:15 AM)</div></div>
+    <div style="background:var(--bg3);border-radius:6px;padding:10px 12px;margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--purple);line-height:1.8">
+      Occurs: 13/217 days (6%) — rare but high-value<br>
+      Avg day gain after reversal: +$5.40<br>
+      Apr 13: –$0.83 morning drop → +$8.72 day gain
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">// Non-negotiable rules</div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--red)"></div><div class="sig-label" style="color:var(--text)">Never trade the first bar (9:30–9:32)</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--red)"></div><div class="sig-label" style="color:var(--text)">Never enter before 10:00 — ORB must be locked</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--red)"></div><div class="sig-label" style="color:var(--text)">Exit any bear position immediately on VWAP reclaim</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--red)"></div><div class="sig-label" style="color:var(--text)">Never chase a gap — wait for ORB structure</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--red)"></div><div class="sig-label" style="color:var(--text)">No revenge trades after a loss — evaluate each setup fresh</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--red)"></div><div class="sig-label" style="color:var(--text)">Sit out if direction score is between –2 and +2</div></div>
+    <div class="sig-row"><div class="dot-ind" style="background:var(--amber)"></div><div class="sig-label" style="color:var(--text)">$95 account: max 1 option contract per trade — no exceptions</div></div>
   </div>
 </div>
 
 </div><!-- /app -->
 
 <script>
-// ── State ─────────────────────────────────────────────────────────────────────
-let apiKey='', secretKey='', barMin=3;
-let bars=[], cumTPV=0, cumVol=0;
-let orbH=null, orbL=null, orbSet=false;
-let sessH=null, sessL=null, sessHt='', sessLt='';
-let openPrice=null, lastPrice=null;
-let prevAboveVwap=null, prevAboveOrbH=null, prevAboveOrbL=null;
-let recentVols=[];
-let feedTimer=null, ringTimer=null, ringPct=0;
-let soundOn=true, alertCount=0;
-const PRIOR_CLOSE=679.86;
+// ── Constants from 217-day dataset ────────────────────────────────────────────
+const PRIOR_CLOSE = 686.50;
+const AVG_ORB = 2.56;
+const AVG_FB_VOL = 1380000;
+const APR13_HIGH = 686.50;
+const APR13_LOW = 676.58;
 
-const p = n => n!=null ? '$'+n.toFixed(2) : '—';
-const pn = n => n!=null ? (n>=0?'+':'')+n.toFixed(2) : '—';
+// ── State ─────────────────────────────────────────────────────────────────────
+let apiKey='',secretKey='',barMin=2;
+let bars=[],cumTPV=0,cumVol=0;
+let orbH=null,orbL=null,orbSet=false;
+let sessH=null,sessL=null,sessHt='',sessLt='';
+let openPrice=null,lastPrice=null;
+let prevAboveVwap=null,prevAboveOrbH=null,prevAboveOrbL=null;
+let recentVols=[],morningLow=null,morningLowSet=false;
+let soundOn=true,ringTimer=null,REFRESH_SECS=120;
+
+const p = n => n!=null?'$'+n.toFixed(2):'—';
+const pn = n => n!=null?(n>=0?'+':'')+n.toFixed(2):'—';
 
 // ── Sound ─────────────────────────────────────────────────────────────────────
 function beep(f,d,t='sine'){
   if(!soundOn)return;
-  try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t;o.frequency.value=f;g.gain.setValueAtTime(0.25,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+d/1000);o.start();o.stop(c.currentTime+d/1000);}catch(e){}
+  try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t;o.frequency.value=f;g.gain.setValueAtTime(0.25,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+d/1000);o.start();o.stop(c.currentTime+d/1000);}catch(e){}
 }
 function toggleSound(){soundOn=!soundOn;document.getElementById('snd-btn').textContent=soundOn?'SND ON':'SND OFF';}
 
 // ── Alerts ────────────────────────────────────────────────────────────────────
 function addAlert(type,msg,time){
-  const box=document.querySelector('.alerts-box');
-  const ph=document.getElementById('alerts-placeholder');
-  if(ph)ph.remove();
+  const feed=document.getElementById('alert-feed');
+  const ph=feed.querySelector('.no-alerts');if(ph)ph.remove();
   const el=document.createElement('div');
   el.className='alert-item';
-  el.innerHTML=`<div class="alert-time">${time}</div><div class="alert-body alert-${type}">${msg}</div>`;
-  box.insertBefore(el,box.firstChild);
-  if(box.children.length>40)box.removeChild(box.lastChild);
+  el.innerHTML='<div class="at">'+time+'</div><div class="ab a'+type+'">'+msg+'</div>';
+  feed.insertBefore(el,feed.firstChild);
+  if(feed.children.length>50)feed.removeChild(feed.lastChild);
 }
-function clearAlerts(){document.querySelector('.alerts-box').innerHTML='<div class="no-alerts" id="alerts-placeholder">Cleared</div>';}
-
-// ── Status ────────────────────────────────────────────────────────────────────
-function setStatus(state,txt){
-  document.getElementById('pip').className='pip '+state;
-  document.getElementById('status-txt').textContent=txt;
-}
+function clearAlerts(){document.getElementById('alert-feed').innerHTML='<div class="no-alerts">Cleared</div>';}
+function setStatus(s,m){document.getElementById('pip').className='pip '+s;document.getElementById('status-txt').textContent=m;}
 
 // ── Core engine ───────────────────────────────────────────────────────────────
 function processBar(time,open,high,low,close,vol){
@@ -299,41 +468,63 @@ function processBar(time,open,high,low,close,vol){
   if(!sessH||high>sessH){sessH=high;sessHt=time;}
   if(!sessL||low<sessL){sessL=low;sessLt=time;}
 
+  // Track morning low (before 10:30)
+  const[h,m]=time.split(':').map(Number);
+  const mins=h*60+m;
+  if(mins<630&&(!morningLow||low<morningLow))morningLow=low;
+
   const tp=(high+low+close)/3;
   cumTPV+=tp*vol;cumVol+=vol;
   const vwap=cumVol>0?cumTPV/cumVol:close;
-
-  const [h,m]=time.split(':').map(Number);
-  const mins=h*60+m;
   const isOrb=mins<600;
 
-  if(isOrb){
-    orbH=orbH?Math.max(orbH,high):high;
-    orbL=orbL?Math.min(orbL,low):low;
-  }
+  if(isOrb){orbH=orbH?Math.max(orbH,high):high;orbL=orbL?Math.min(orbL,low):low;}
 
   if(!orbSet&&mins>=600&&orbH!=null){
     orbSet=true;
+    document.getElementById('kv-orb-h').textContent=p(orbH);
+    document.getElementById('kv-orb-l').textContent=p(orbL);
+    document.getElementById('kv-orb-range').textContent=p(orbH-orbL);
+    document.getElementById('ks-orb-status').textContent='LOCKED';
+    document.getElementById('l-orb-h').textContent=p(orbH);
+    document.getElementById('l-orb-l').textContent=p(orbL);
     if(document.getElementById('al-orb-set').checked){
-      addAlert('info',`ORB LOCKED — High: ${p(orbH)} / Low: ${p(orbL)} / Range: ${p(orbH-orbL)}`,time);
+      const wide=orbH-orbL>AVG_ORB*1.3?'WIDE — adjust stops!':'normal range';
+      addAlert('info','ORB LOCKED '+p(orbH-orbL)+' ('+wide+'). H:'+p(orbH)+' L:'+p(orbL),time);
       beep(523,300);
     }
+    // Update direction indicator ORB signal
+    const orbSig=(orbH-orbL)>AVG_ORB?'wider → trending day likely':'tighter → chop risk';
+    document.getElementById('sv-orb').textContent=p(orbH-orbL);
+    document.getElementById('sv-orb').className='sig-val '+((orbH-orbL)>AVG_ORB?'kv-g':'kv-a');
+    document.getElementById('d-orb').style.background=(orbH-orbL)>AVG_ORB?'var(--accent2)':'var(--amber)';
   }
 
+  // Volume spike
   recentVols.push(vol);if(recentVols.length>8)recentVols.shift();
   const avgVol=recentVols.reduce((a,b)=>a+b,0)/recentVols.length;
   if(recentVols.length>=4&&vol>avgVol*1.8&&orbSet&&document.getElementById('al-vol').checked){
-    addAlert('warn',`VOL SPIKE ${Math.round(vol/1000)}K — ${(vol/avgVol).toFixed(1)}× avg`,time);
+    addAlert('warn','VOL SPIKE '+Math.round(vol/1000)+'K — '+(vol/avgVol).toFixed(1)+'× avg. Watch for directional move.',time);
     beep(660,180);
   }
 
+  // VWAP cross
   const aboveVwap=close>vwap;
   if(prevAboveVwap!==null&&aboveVwap!==prevAboveVwap&&document.getElementById('al-vwap').checked){
     if(aboveVwap){
-      addAlert('bull',`VWAP RECLAIM ${p(close)} crossed above VWAP ${p(vwap)}`,time);
-      beep(659,180);setTimeout(()=>beep(784,220),210);
-    }else{
-      addAlert('bear',`VWAP BREAK ${p(close)} crossed below VWAP ${p(vwap)}`,time);
+      // Check if this is a bear reversal setup
+      const morningDrop=openPrice-(morningLow||sessL||openPrice);
+      const lowVol=bars.length>0&&bars[0].vol<AVG_FB_VOL;
+      const isReversal=morningDrop<2.0&&lowVol&&mins<720;
+      if(isReversal&&document.getElementById('al-reversal').checked){
+        addAlert('bull','⚡ BEAR REVERSAL SIGNAL — VWAP reclaimed '+p(close)+'. Morning drop only -'+morningDrop.toFixed(2)+'. LOW VOL gap-down. EXIT PUTS NOW. Watch for bull ORB break.',time);
+        beep(880,200);setTimeout(()=>beep(1047,250),230);setTimeout(()=>beep(1319,300),490);
+      } else {
+        addAlert('bull','VWAP RECLAIM '+p(close)+' crossed above VWAP '+p(vwap),time);
+        beep(659,180);setTimeout(()=>beep(784,220),210);
+      }
+    } else {
+      addAlert('bear','VWAP BREAK '+p(close)+' crossed below VWAP '+p(vwap),time);
       beep(392,180);setTimeout(()=>beep(330,220),210);
     }
   }
@@ -342,66 +533,132 @@ function processBar(time,open,high,low,close,vol){
   if(orbSet){
     const aboveOrbH=close>orbH;
     if(prevAboveOrbH===false&&aboveOrbH&&document.getElementById('al-orb-bull').checked){
-      addAlert('bull',`BULL ORB BREAK ${p(close)} > ORB High ${p(orbH)} ${aboveVwap?'✓ above VWAP':'⚠ below VWAP'}`,time);
+      addAlert('bull','BULL ORB BREAK '+p(close)+' > ORB High '+p(orbH)+'. VWAP '+p(vwap)+'. '+(aboveVwap?'✓ above VWAP — A+ entry.':'⚠ below VWAP — wait.'),time);
       beep(880,200);setTimeout(()=>beep(1047,250),230);setTimeout(()=>beep(1319,300),490);
     }
     if(prevAboveOrbH===null)prevAboveOrbH=aboveOrbH;else prevAboveOrbH=aboveOrbH;
-
     const belowOrbL=close<orbL;
     if(prevAboveOrbL===true&&belowOrbL&&document.getElementById('al-orb-bear').checked){
-      addAlert('bear',`BEAR ORB BREAK ${p(close)} < ORB Low ${p(orbL)} ${!aboveVwap?'✓ below VWAP':'⚠ above VWAP'}`,time);
+      addAlert('bear','BEAR ORB BREAK '+p(close)+' < ORB Low '+p(orbL)+'. VWAP '+p(vwap)+'. '+(!aboveVwap?'✓ below VWAP — A+ put setup.':'⚠ above VWAP — possible fake.'),time);
       beep(220,250);setTimeout(()=>beep(185,280),280);setTimeout(()=>beep(147,320),570);
     }
     if(prevAboveOrbL===null)prevAboveOrbL=!belowOrbL;else prevAboveOrbL=!belowOrbL;
   }
 
+  // Update direction indicator at 9:45
+  if(mins>=9*60+44&&mins<=9*60+47&&bars.length>=4){
+    updateDirectionIndicator(close,vwap,aboveVwap,vol);
+  }
+
   updateUI(close,vwap,aboveVwap,time);
   bars.push({time,open,high,low,close,vwap,vol,isOrb});
-  updateTable(vwap);
+  updateTable();
   updateSnapshot(close,vwap,aboveVwap,time);
 }
 
-// ── UI updates ────────────────────────────────────────────────────────────────
+function updateDirectionIndicator(price,vwap,aboveVwap,vol){
+  let score=0;
+  // First bar analysis
+  if(bars.length>0){
+    const fb=bars[0];
+    const fbBody=Math.abs(fb.close-fb.open);
+    const fbRange=fb.high-fb.low;
+    const fbBodyPct=fbRange>0?fbBody/fbRange:0;
+    const fbUp=fb.close>fb.open;
+    const strongBody=fbBodyPct>0.55;
+
+    // First bar score (weight 2)
+    const fbScore=strongBody?(fbUp?2:-2):(fbUp?1:-1);
+    score+=fbScore;
+    document.getElementById('sv-fb').textContent=strongBody?(fbUp?'strong UP':'strong DOWN'):(fbUp?'weak up':'weak down');
+    document.getElementById('sv-fb').className='sig-val '+(fbUp?'kv-g':'kv-r');
+    document.getElementById('d-fb').style.background=fbUp?'var(--accent2)':'var(--red)';
+
+    // First bar volume
+    const fbVol=fb.vol;
+    const volRatio=fbVol/AVG_FB_VOL;
+    const volScore=volRatio<0.8?(fbUp?-1:1):(volRatio>1.3?(fbUp?1:-1):0);
+    score+=volScore;
+    document.getElementById('sv-vol').textContent=(volRatio).toFixed(1)+'× avg';
+    document.getElementById('sv-vol').className='sig-val '+(volRatio<0.8?'kv-p':volRatio>1.3?'kv-b':'kv-a');
+    document.getElementById('d-vol').style.background=volRatio<0.8?'var(--purple)':volRatio>1.3?'var(--blue)':'var(--amber)';
+
+    // Low vol gap-down reversal signal
+    const gapDown=openPrice<PRIOR_CLOSE-0.30;
+    const lowVol=fbVol<AVG_FB_VOL;
+    if(gapDown&&lowVol){
+      document.getElementById('sv-lowvol').textContent='ACTIVE — watch for reversal';
+      document.getElementById('sv-lowvol').className='sig-val kv-p';
+      document.getElementById('d-lowvol').style.background='var(--purple)';
+    } else {
+      document.getElementById('sv-lowvol').textContent='not active';
+      document.getElementById('sv-lowvol').className='sig-val';
+      document.getElementById('d-lowvol').style.background='var(--text3)';
+    }
+  }
+
+  // VWAP at 9:45 (weight 2)
+  const vwapScore=aboveVwap?2:-2;
+  score+=vwapScore;
+  document.getElementById('sv-vwap').textContent=aboveVwap?'ABOVE':'BELOW';
+  document.getElementById('sv-vwap').className='sig-val '+(aboveVwap?'kv-g':'kv-r');
+  document.getElementById('d-vwap').style.background=aboveVwap?'var(--accent2)':'var(--red)';
+
+  // Gap direction (weight 1)
+  const gap=openPrice-PRIOR_CLOSE;
+  const gapScore=gap>0.50?1:gap<-0.50?-1:0;
+  score+=gapScore;
+  document.getElementById('sv-gap').textContent=(gap>=0?'+':'')+gap.toFixed(2);
+  document.getElementById('sv-gap').className='sig-val '+(gap>0.5?'kv-g':gap<-0.5?'kv-r':'kv-a');
+  document.getElementById('d-gap').style.background=gap>0.5?'var(--accent2)':gap<-0.5?'var(--red)':'var(--amber)';
+
+  // Display score
+  document.getElementById('dir-score').textContent=(score>=0?'+':'')+score;
+  document.getElementById('dir-score').style.color=score>=3?'var(--accent2)':score<=-3?'var(--red)':'var(--amber)';
+  const pct=Math.min(100,Math.max(0,((score+9)/18)*100));
+  const bar=document.getElementById('score-bar');
+  bar.style.width=pct+'%';
+  bar.style.background=score>=3?'var(--accent2)':score<=-3?'var(--red)':'var(--amber)';
+}
+
 function updateUI(price,vwap,aboveVwap,time){
   const chg=openPrice?price-openPrice:0;
   const pct=openPrice?chg/openPrice*100:0;
-  const priceEl=document.getElementById('price-display');
-  priceEl.textContent='$'+price.toFixed(2);
-  priceEl.className='price-main '+(chg>0.01?'up':chg<-0.01?'down':'flat');
-  const chgEl=document.getElementById('price-change');
-  chgEl.textContent=`${pn(chg)} (${pct>=0?'+':''}${pct.toFixed(2)}%) from open`;
-  chgEl.className='price-meta '+(chg>=0?'up':'down');
+  const pd=document.getElementById('price-display');
+  pd.textContent=p(price);
+  pd.className='price-big '+(chg>0.01?'up':chg<-0.01?'down':'flat');
+  const pc=document.getElementById('price-chg');
+  pc.textContent=pn(chg)+' ('+pn(pct)+'%) from open';
+  pc.className='price-chg '+(chg>=0?'up':'down');
 
-  document.getElementById('kpi-vwap').textContent=p(vwap);
-  document.getElementById('kpi-vwap-pos').textContent=aboveVwap?'↑ above VWAP':'↓ below VWAP';
-  document.getElementById('kpi-vwap-pos').style.color=aboveVwap?'var(--accent2)':'var(--red)';
-
-  if(orbH){
-    document.getElementById('kpi-orb-h').textContent=p(orbH);
-    document.getElementById('kpi-orb-l').textContent=p(orbL);
-    document.getElementById('kpi-orb-range').textContent=p(orbH-orbL);
-    document.getElementById('kpi-orb-status').textContent=orbSet?'LOCKED':'forming...';
-    document.getElementById('l-orb-h').textContent=p(orbH);
-    document.getElementById('l-orb-l').textContent=p(orbL);
-    document.getElementById('kpi-orb-h-sub').textContent=price>orbH?'⚡ BROKEN':price<orbH?'holding':'at level';
-    document.getElementById('kpi-orb-l-sub').textContent=price<orbL?'⚡ BROKEN':price>orbL?'holding':'at level';
-    const th=document.getElementById('t-orb-h');
-    th.textContent=price>orbH?'broken':'holding';
-    th.className='tag '+(price>orbH?'tag-amber':'tag-green');
-    const tl=document.getElementById('t-orb-l');
-    tl.textContent=price<orbL?'broken':'holding';
-    tl.className='tag '+(price<orbL?'tag-amber':'tag-red');
-  }
+  document.getElementById('kv-vwap').textContent=p(vwap);
+  document.getElementById('ks-vwap').textContent=aboveVwap?'↑ above VWAP':'↓ below VWAP';
+  document.getElementById('ks-vwap').style.color=aboveVwap?'var(--accent2)':'var(--red)';
   document.getElementById('l-vwap').textContent=p(vwap);
   const tv=document.getElementById('t-vwap');
   tv.textContent=aboveVwap?'above':'below';
-  tv.className='tag '+(aboveVwap?'tag-green':'tag-red');
+  tv.className='tag '+(aboveVwap?'tg':'tr');
 
-  if(sessH){document.getElementById('kpi-sess-h').textContent=p(sessH);document.getElementById('kpi-sess-h-t').textContent=sessHt;}
-  if(sessL){document.getElementById('kpi-sess-l').textContent=p(sessL);document.getElementById('kpi-sess-l-t').textContent=sessLt;}
+  if(sessH){document.getElementById('kv-sess-h').textContent=p(sessH);document.getElementById('ks-sess-h').textContent=sessHt;}
+  if(sessL){document.getElementById('kv-sess-l').textContent=p(sessL);document.getElementById('ks-sess-l').textContent=sessLt;}
+
+  if(orbH){
+    const orbPos=price>orbH?'↑ ABOVE ORB':price<orbL?'↓ BELOW ORB':'→ inside ORB';
+    const orbCls=price>orbH?'kv-g':price<orbL?'kv-r':'kv-a';
+    document.getElementById('kv-orb-range').className='kv '+orbCls;
+    document.getElementById('ks-orb-status').textContent=orbSet?orbPos:'forming...';
+    document.getElementById('ks-orb-h').textContent=price>orbH?'⚡ BROKEN ↑':'holding';
+    document.getElementById('ks-orb-l').textContent=price<orbL?'⚡ BROKEN ↓':'holding';
+    const th=document.getElementById('t-orb-h');
+    th.textContent=price>orbH?'broken ↑':'holding';
+    th.className='tag '+(price>orbH?'ta':'tg');
+    const tl=document.getElementById('t-orb-l');
+    tl.textContent=price<orbL?'broken ↓':'holding';
+    tl.className='tag '+(price<orbL?'ta':'tr');
+  }
 }
 
-function updateTable(latestVwap){
+function updateTable(){
   const recent=bars.slice(-18).reverse();
   const volMax=Math.max(...bars.map(b=>b.vol),1);
   document.getElementById('bar-body').innerHTML=recent.map((b,i)=>{
@@ -409,115 +666,98 @@ function updateTable(latestVwap){
     const abv=b.close>b.vwap;
     const vp=Math.min(100,b.vol/volMax*100);
     const cls=i===0?'cur-row':b.isOrb?'orb-row':'';
-    return `<tr class="${cls}">
-      <td style="color:var(--text2)">${b.time}</td>
-      <td>${b.open.toFixed(2)}</td>
-      <td style="color:var(--accent2)">${b.high.toFixed(2)}</td>
-      <td style="color:var(--red)">${b.low.toFixed(2)}</td>
-      <td style="font-weight:500;color:${isUp?'var(--accent2)':'var(--red)'}">${b.close.toFixed(2)}</td>
-      <td style="color:var(--text2)">${b.vwap.toFixed(2)}</td>
-      <td><span class="badge-sm" style="background:${abv?'rgba(53,240,160,.12)':'rgba(240,53,69,.12)'};color:${abv?'var(--accent2)':'var(--red)'}">${abv?'▲ABV':'▼BLW'}</span></td>
-      <td>${Math.round(b.vol/1000)}K<div class="vol-bar"><div class="vol-fill" style="width:${vp}%"></div></div></td>
-    </tr>`;
+    return '<tr class="'+cls+'"><td style="color:var(--text2)">'+b.time+'</td><td>'+b.open.toFixed(2)+'</td><td style="color:var(--accent2)">'+b.high.toFixed(2)+'</td><td style="color:var(--red)">'+b.low.toFixed(2)+'</td><td style="font-weight:500;color:'+(isUp?'var(--accent2)':'var(--red)')+'">'+b.close.toFixed(2)+'</td><td style="color:var(--text2)">'+b.vwap.toFixed(2)+'</td><td><span style="font-size:9px;padding:1px 5px;border-radius:99px;background:'+(abv?'rgba(53,240,160,.12)':'rgba(240,53,69,.12)')+';color:'+(abv?'var(--accent2)':'var(--red)')+'">'+( abv?'▲ABV':'▼BLW')+'</span></td><td>'+Math.round(b.vol/1000)+'K<div class="vol-bar"><div class="vol-fill" style="width:'+vp+'%"></div></div></td></tr>';
   }).join('');
 }
 
 function updateSnapshot(price,vwap,aboveVwap,time){
-  const vwap_pos=aboveVwap?'ABOVE':'BELOW';
-  const orb_pos=orbSet?(price>orbH?'ABOVE ORB HIGH':price<orbL?'BELOW ORB LOW':'INSIDE ORB'):'ORB FORMING';
   const chg=openPrice?price-openPrice:0;
+  const orbPos=orbSet?(price>orbH?'ABOVE ORB HIGH':price<orbL?'BELOW ORB LOW':'INSIDE ORB'):'ORB FORMING';
+  const mDrop=openPrice&&morningLow?openPrice-morningLow:null;
+  const revSignal=bars.length>0&&bars[0].vol<AVG_FB_VOL&&openPrice<PRIOR_CLOSE-0.30&&mDrop&&mDrop<2.0;
   const snap=
-`SPY SESSION SNAPSHOT — ${time} ET
-─────────────────────────────────────
-Last:      ${p(price)}  (${pn(chg)} from open)
-VWAP:      ${p(vwap)}  [price is ${vwap_pos} VWAP]
-ORB High:  ${p(orbH)}  ${orbSet?'[LOCKED]':'[forming]'}
-ORB Low:   ${p(orbL)}  ${orbSet?'[LOCKED]':'[forming]'}
-ORB Range: ${p(orbH&&orbL?orbH-orbL:null)}
-ORB Pos:   ${orb_pos}
-Sess High: ${p(sessH)}  @ ${sessHt}
-Sess Low:  ${p(sessL)}  @ ${sessLt}
-Prior cls: ${p(PRIOR_CLOSE)}
-Bars done: ${bars.length}
-─────────────────────────────────────`;
-  document.getElementById('claude-snapshot').textContent=snap;
+'SPY SESSION SNAPSHOT — '+time+' ET\n'+
+'─────────────────────────────────────\n'+
+'Last:      '+p(price)+'  ('+pn(chg)+' from open)\n'+
+'VWAP:      '+p(vwap)+'  [price is '+(aboveVwap?'ABOVE':'BELOW')+' VWAP]\n'+
+'ORB High:  '+p(orbH)+'  ['+(orbSet?'LOCKED':'forming')+']  avg: $'+AVG_ORB.toFixed(2)+'\n'+
+'ORB Low:   '+p(orbL)+'  ['+(orbSet?'LOCKED':'forming')+']\n'+
+'ORB Range: '+p(orbH&&orbL?orbH-orbL:null)+'\n'+
+'ORB Pos:   '+orbPos+'\n'+
+'Sess High: '+p(sessH)+'  @ '+sessHt+'\n'+
+'Sess Low:  '+p(sessL)+'  @ '+sessLt+'\n'+
+'Morning Δ: '+(mDrop!=null?'-$'+mDrop.toFixed(2):' —')+'\n'+
+'First bar: '+(bars.length>0?(bars[0].vol/1e6).toFixed(2)+'M ('+(bars[0].vol/AVG_FB_VOL).toFixed(1)+'× avg)':' —')+'\n'+
+'Rev signal:'+(revSignal?' ⚡ ACTIVE — low vol gap-down, drop <$2':' not active')+'\n'+
+'Prior cls: '+p(PRIOR_CLOSE)+'\n'+
+'Bars done: '+bars.length+'\n'+
+'─────────────────────────────────────';
+  document.getElementById('snap').textContent=snap;
 }
 
-function copyToClipboard(){
-  const txt=document.getElementById('claude-snapshot').textContent;
-  navigator.clipboard.writeText(txt).then(()=>{
-    const btn=event.target;btn.textContent='COPIED!';
-    setTimeout(()=>btn.textContent='COPY',1500);
+function copySnap(){
+  navigator.clipboard.writeText(document.getElementById('snap').textContent).then(()=>{
+    const btn=event.target;btn.textContent='COPIED!';setTimeout(()=>btn.textContent='COPY',1500);
   });
 }
 
 // ── Alpaca fetch ──────────────────────────────────────────────────────────────
 async function fetchBars(){
   if(!apiKey||!secretKey)return;
-
   const now=new Date();
   const et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
   const h=et.getHours(),m=et.getMinutes();
-  if(h<9||(h===9&&m<30)||h>=16){
-    setStatus('','market closed');return;
-  }
+  if(h<9||(h===9&&m<30)||h>=16){setStatus('','market closed');return;}
 
-  // Build time range: today 9:30 ET to now
   const today=et.toISOString().split('T')[0];
-  const start=`${today}T09:30:00-04:00`;
-  const end=now.toISOString();
-  const url=`https://data.alpaca.markets/v2/stocks/SPY/bars?timeframe=${barMin}Min&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&limit=200&adjustment=raw&feed=iex`;
+  const start=encodeURIComponent(today+'T09:30:00-04:00');
+  const end=encodeURIComponent(now.toISOString());
+  const url='https://data.alpaca.markets/v2/stocks/SPY/bars?timeframe='+barMin+'Min&start='+start+'&end='+end+'&limit=200&adjustment=raw&feed=iex';
 
   try{
     const res=await fetch(url,{headers:{'APCA-API-KEY-ID':apiKey,'APCA-API-SECRET-KEY':secretKey}});
     if(!res.ok){setStatus('err','API error '+res.status);return;}
     const data=await res.json();
-    if(!data.bars||data.bars.length===0){setStatus('loading','waiting for bars...');return;}
+    if(!data.bars||!data.bars.length){setStatus('loading','waiting for bars...');return;}
 
-    // Reset and recompute from scratch each fetch (stateless)
-    bars=[];cumTPV=0;cumVol=0;
-    orbH=null;orbL=null;orbSet=false;
+    // Full reset and recompute
+    bars=[];cumTPV=0;cumVol=0;orbH=null;orbL=null;orbSet=false;
     sessH=null;sessL=null;sessHt='';sessLt='';
-    openPrice=null;lastPrice=null;
-    prevAboveVwap=null;prevAboveOrbH=null;prevAboveOrbL=null;
-    recentVols=[];
+    openPrice=null;lastPrice=null;morningLow=null;
+    prevAboveVwap=null;prevAboveOrbH=null;prevAboveOrbL=null;recentVols=[];
 
     data.bars.forEach(bar=>{
       const d=new Date(bar.t);
       const et2=new Date(d.toLocaleString('en-US',{timeZone:'America/New_York'}));
-      const time=`${et2.getHours().toString().padStart(2,'0')}:${et2.getMinutes().toString().padStart(2,'0')}`;
+      const time=et2.getHours().toString().padStart(2,'0')+':'+et2.getMinutes().toString().padStart(2,'0');
       processBar(time,bar.o,bar.h,bar.l,bar.c,bar.v);
     });
 
-    setStatus('live',`live · ${data.bars.length} bars · IEX`);
-  }catch(err){
-    setStatus('err','fetch failed');console.error(err);
-  }
+    setStatus('live','live · '+data.bars.length+' bars · IEX');
+  }catch(err){setStatus('err','fetch failed');console.error(err);}
 }
 
-// ── Refresh ring ──────────────────────────────────────────────────────────────
-let ringInterval=null,ringSecs=0,REFRESH_SECS=barMin*60;
+// ── Ring timer ────────────────────────────────────────────────────────────────
+let ringSecs=0,ringInt=null;
 function startRing(){
   ringSecs=REFRESH_SECS;
-  if(ringInterval)clearInterval(ringInterval);
-  ringInterval=setInterval(()=>{
+  if(ringInt)clearInterval(ringInt);
+  ringInt=setInterval(()=>{
     ringSecs--;
     if(ringSecs<=0){ringSecs=REFRESH_SECS;fetchBars();}
     const pct=(REFRESH_SECS-ringSecs)/REFRESH_SECS;
-    const offset=75.4-(75.4*pct);
-    document.getElementById('refresh-ring').style.strokeDashoffset=offset;
-    document.getElementById('next-refresh').textContent=`refresh in ${ringSecs}s`;
+    document.getElementById('ring').style.strokeDashoffset=75.4-(75.4*pct);
+    document.getElementById('next-refresh').textContent='refresh '+ringSecs+'s';
   },1000);
 }
 
-// ── Main clock ────────────────────────────────────────────────────────────────
+// ── Clock ─────────────────────────────────────────────────────────────────────
 setInterval(()=>{
-  const now=new Date();
-  const et=new Date(now.toLocaleString('en-US',{timeZone:'America/New_York'}));
+  const et=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));
   const t=et.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   const h=et.getHours(),m=et.getMinutes();
-  const open=h>9||(h===9&&m>=30);const closed=h>=16;
-  document.getElementById('market-clock').textContent=`${t} ET — market ${closed?'CLOSED':open?'OPEN':'pre-market'}`;
+  const open=(h>9||(h===9&&m>=30))&&h<16;
+  document.getElementById('market-clock').textContent=t+' ET — '+(h>=16?'CLOSED':open?'OPEN':'pre-market');
 },1000);
 
 // ── Start ─────────────────────────────────────────────────────────────────────
@@ -526,11 +766,17 @@ function startFeed(){
   secretKey=document.getElementById('secret-key').value.trim();
   barMin=parseInt(document.getElementById('bar-size').value);
   REFRESH_SECS=barMin*60;
-  if(!apiKey||!secretKey){alert('Enter both API Key and Secret Key');return;}
+  if(!apiKey||!secretKey){alert('Enter API Key and Secret Key');return;}
   document.getElementById('setup').style.display='none';
   setStatus('loading','connecting...');
-  fetchBars();
-  startRing();
+  fetchBars();startRing();
+}
+
+function showTab(name,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('sec-'+name).classList.add('on');
+  btn.classList.add('on');
 }
 </script>
 </body>
